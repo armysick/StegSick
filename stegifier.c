@@ -16,15 +16,16 @@ int main(int argc, char *argv[]){
 		return -1;
 	}
 	
-	target = fopen("stegified", "w");
+	target = fopen("unstegified", "w");
 	if(target == NULL){
 		printf("error creating file.");
 		return -1;
 	}
 	
-	int curr_to_encryp_bit = 1;
+	int curr_to_encryp_bit = 0;
 	int first;
 	int counter = 0;
+	int sent_counter = 0;
 	while((first = fgetc(fd)) != EOF){
 		
 		counter++;
@@ -37,7 +38,7 @@ int main(int argc, char *argv[]){
 			first |= 1 << 0;
 		if(DEBUG)
 		printf("CHANGED TO: <0x%x>\n\n", first);
-		
+		sent_counter ++;
 		}
 		fputc(first, target);
 	
@@ -46,6 +47,7 @@ int main(int argc, char *argv[]){
     fclose(fd);
 	fclose(target);
 	printf("\n%i bytes read!\n", counter);
+	printf("\n%i bits sent!\n", sent_counter);
     
     return 0;
 }

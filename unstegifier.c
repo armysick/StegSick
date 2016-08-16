@@ -3,6 +3,7 @@
 #include <unistd.h>
 
 int main (int argc, char *argv[]){
+	int DEBUG = 1;
 	FILE *steg;
 	FILE *target;
 	
@@ -20,27 +21,43 @@ int main (int argc, char *argv[]){
 	
 	int first;
 	int counter = 0;
+	unsigned char byte = 0xF;
+	int byte_counter = 0;
+	int sent_counter = 0;
 	while((first = fgetc(steg)) != EOF){
 		
 		counter++;
 		if(counter > 50 ){  // MUST BE 50+ for BMP;  TXT has NO HEADER
 			// TODO 
-		if(DEBUG)
-		printf("READ      : <0x%x>\n", first);
-		if(curr_to_encryp_bit == 0)
-			first &= ~(1 << 0);
-		else
-			first |= 1 << 0;
-		if(DEBUG)
-		printf("CHANGED TO: <0x%x>\n\n", first);
+			if(DEBUG)
+			printf("READ      : <0x%x>\n", first);
+
+			if(DEBUG)
+				printf(" RESULT: %x\n", (first>>0) & 1);
+			if(((first >> 0) & 1) == 1)
+				byte |= 1 << byte_counter;
+			else
+				byte &= ~(1 << byte_counter);
+			byte_counter ++;
+			sent_counter++;
+
+			if(DEBUG)
+			printf("CHANGED TO: <0x%x>\n\n", first);
+
+			if(byte_counter == 7){
+				fputc(byte, target);
+				byte_counter = 0;
+				byte = 0xF;
+			}
 		
 		}
-		fputc(first, target);
+		
 	
 		
 	}
     fclose(steg);
 	fclose(target);
 	printf("\n%i bytes read!\n", counter);
+	printf("\n%i bits received!\n", sent_counter);
 	
 }
