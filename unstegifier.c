@@ -3,7 +3,7 @@
 #include <unistd.h>
 
 int main (int argc, char *argv[]){
-	int DEBUG = 1;
+	int DEBUG = 0;
 	FILE *steg;
 	FILE *target;
 	
@@ -22,7 +22,7 @@ int main (int argc, char *argv[]){
 	int first;
 	int counter = 0;
 	unsigned char byte = 0xF;
-	int byte_counter = 0;
+	int bit_counter = 0;
 	int sent_counter = 0;
 	while((first = fgetc(steg)) != EOF){
 		
@@ -35,18 +35,18 @@ int main (int argc, char *argv[]){
 			if(DEBUG)
 				printf(" RESULT: %x\n", (first>>0) & 1);
 			if(((first >> 0) & 1) == 1)
-				byte |= 1 << byte_counter;
+				byte |= 1 << bit_counter;
 			else
-				byte &= ~(1 << byte_counter);
-			byte_counter ++;
+				byte &= ~(1 << bit_counter);
+			bit_counter ++;
 			sent_counter++;
 
 			if(DEBUG)
 			printf("CHANGED TO: <0x%x>\n\n", first);
 
-			if(byte_counter == 7){
+			if(bit_counter == 8){
 				fputc(byte, target);
-				byte_counter = 0;
+				bit_counter = 0;
 				byte = 0xF;
 			}
 		
