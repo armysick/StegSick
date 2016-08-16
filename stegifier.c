@@ -16,7 +16,7 @@ int main(int argc, char *argv[]){
 		return -1;
 	}
 	
-	target = fopen("unstegified", "w");
+	target = fopen("stegified", "w");
 	if(target == NULL){
 		printf("error creating file.");
 		return -1;
